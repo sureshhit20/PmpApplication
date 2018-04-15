@@ -15,15 +15,12 @@ public class PmpDatabaseHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null,DB_VERSION);
 
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
             updateMyDatabase(db, 0, DB_VERSION);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 
     public void updateMyDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -33,6 +30,7 @@ public class PmpDatabaseHelper extends SQLiteOpenHelper {
             insertQuestion(db, 1,"What is 2+2?", "Answer is 1", "Answer is 2", "Answer is 3", "Answer is 4", "D");
             insertQuestion(db, 2,"What is 2+3?", "Answer is 1", "Answer is 2", "Answer is 5", "Answer is 4", "C");
             insertQuestion(db, 3,"What is 2+4?", "Answer is 1", "Answer is 6", "Answer is 5", "Answer is 4", "B");
+            db.execSQL("CREATE TABLE RESULTS (_id INTEGER PRIMARY KEY AUTOINCREMENT, QN TEXT, OP_CORRECT TEXT, OP_SELECTED TEXT)");
 
         }
         }
@@ -48,6 +46,5 @@ public class PmpDatabaseHelper extends SQLiteOpenHelper {
             long b = db.insert("QBANK",null,qbankValues);
 
         }
-
 
 }
