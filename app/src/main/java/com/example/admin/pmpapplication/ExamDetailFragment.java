@@ -7,17 +7,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
 
-public class ExamDetailFragment extends Fragment {
+
+public class ExamDetailFragment extends Fragment implements View.OnClickListener {
 
     public String selected = null;
     public String exam_qn = null;
@@ -27,24 +32,54 @@ public class ExamDetailFragment extends Fragment {
     String optionC = null;
     String optionD = null;
     String question = null;
+    int n = 0;
 
-    SQLiteOpenHelper pmpDatabaseHelper = new PmpDatabaseHelper(getContext());
-    SQLiteDatabase db = pmpDatabaseHelper.getReadableDatabase();
 
     @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//        return inflater.inflate(R.layout.fragment_exam_detail, container, false);
+//
+//    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_exam_detail, container, false);
+        View layout = inflater.inflate(R.layout.fragment_exam_detail, container, false);
+
+        RadioButton radA = (RadioButton) layout.findViewById(R.id.radio_A);
+        radA.setOnClickListener(this);
+
+        RadioButton radB = (RadioButton) layout.findViewById(R.id.radio_B);
+        radB.setOnClickListener(this);
+
+        RadioButton radC = (RadioButton) layout.findViewById(R.id.radio_C);
+        radC.setOnClickListener(this);
+
+        RadioButton radD = (RadioButton) layout.findViewById(R.id.radio_D);
+        radD.setOnClickListener(this);
+
+        Button submitButton = (Button) layout.findViewById(R.id.submit_button_id);
+        submitButton.setOnClickListener(this); return layout;
     }
 
     @Override
     public void onStart(){
 
         super.onStart();
+
+
+
         try {
+            SQLiteOpenHelper pmpDatabaseHelper = new PmpDatabaseHelper(getContext());
+            SQLiteDatabase db = pmpDatabaseHelper.getReadableDatabase();
+            Random rand = new Random();
+            n = rand.nextInt(3)+1;
 
             Cursor cursor = db.query("QBANK", new String[]{"QUESTION_NO","QUESTION", "OPTIONA", "OPTIONB", "OPTIONC", "OPTIOND","ANSWER"},
-                    "_ID = ?", new String[]{Integer.toString(1)}, null, null, null);
+                    "_ID = ?", new String[]{Integer.toString(n)}, null, null, null);
+
+//            Cursor cursor = db.query("QBANK", new String[]{"QUESTION_NO","QUESTION", "OPTIONA", "OPTIONB", "OPTIONC", "OPTIOND","ANSWER"},
+//                    "_ID = ?", new String[]{Integer.toString(1)}, null, null, null);
 
             if (cursor.moveToFirst()){
                 Log.d("tag2","moving to first");
@@ -81,19 +116,21 @@ public class ExamDetailFragment extends Fragment {
 
     }
 
-    public void onRadioButtonClicked(View view){
-        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.options);
-        int id = radioGroup.getCheckedRadioButtonId();
-        switch (id) {
-            case R.id.radio_A:  selected = optionA; break;
-            case R.id.radio_B:  selected = "B"; break;
-            case R.id.radio_C:  selected = "C"; break;
-            case R.id.radio_D:  selected = "D"; break;
+    public void onClick(View v){
+//        getView()
+//        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.options);
+//        int id = radioGroup.getCheckedRadioButtonId();
+        switch (v.getId()) {
+            case R.id.radio_A:  selected = optionA; Log.d("tag10",n + " is clicked"); break;
+            case R.id.radio_B:  selected = optionB; break;
+            case R.id.radio_C:  selected = optionC; break;
+            case R.id.radio_D:  selected = optionD; break;
+            case R.id.submit_button_id: onSubmitClicked(); break;
 
         }
     }
 
-    public void onSubmitClicked(View view){
+    public void onSubmitClicked(){
         if (selected == null){
             Toast toast = Toast.makeText(getContext(), "Please select an option", Toast.LENGTH_SHORT);
             toast.show();
@@ -101,6 +138,11 @@ public class ExamDetailFragment extends Fragment {
         else {
             Toast toast = Toast.makeText(getContext(), "selected option is " + selected, Toast.LENGTH_SHORT);
             toast.show();
+            Fragment frag = new ExamDetailFragment();
+            FragmentTransaction trans = getFragmentManager().beginTransaction();
+            trans.replace(R.id.detail_frag,frag);
+            trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            trans.commit();
 //            insertAnswers(question, exam_ans,selected);
         }
     }
