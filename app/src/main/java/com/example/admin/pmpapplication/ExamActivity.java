@@ -32,7 +32,8 @@ public class ExamActivity extends AppCompatActivity {
         date_value = sdf.format(date);
 
 
-        Fragment frag = new ExamDetailFragment();
+        Fragment frag = new ResultsDetailedFragment();
+ //      Fragment frag = new ExamDetailFragment();
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         trans.replace(R.id.detail_frag,frag);
         trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
