@@ -27,10 +27,10 @@ public class PmpDatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 1) {
             db.execSQL("CREATE TABLE QBANK (_id INTEGER PRIMARY KEY AUTOINCREMENT, QUESTION_NO INT, QUESTION TEXT, OPTIONA TEXT, OPTIONB TEXT, " +
                     "OPTIONC TEXT, OPTIOND TEXT, ANSWER TEXT)");
-            insertQuestion(db, 1,"What is 2+2?", "Answer is 1", "Answer is 2", "Answer is 3", "Answer is 4", "D");
-            insertQuestion(db, 2,"What is 2+3?", "Answer is 1", "Answer is 2", "Answer is 5", "Answer is 4", "C");
-            insertQuestion(db, 3,"What is 2+4?", "Answer is 1", "Answer is 6", "Answer is 5", "Answer is 4", "B");
-            db.execSQL("CREATE TABLE RESULTS (_id INTEGER PRIMARY KEY AUTOINCREMENT, QN TEXT, OP_CORRECT TEXT, OP_SELECTED TEXT)");
+            insertQuestion(db, 1,"What is 2+2?", "Answer is 1", "Answer is 2", "Answer is 3", "Answer is 4", "Answer is 4");
+            insertQuestion(db, 2,"What is 3+2?", "Answer is 1", "Answer is 2", "Answer is 5", "Answer is 4", "Answer is 5");
+            insertQuestion(db, 3,"What is 4+2?", "Answer is 1", "Answer is 6", "Answer is 5", "Answer is 4", "Answer is 6");
+            db.execSQL("CREATE TABLE RESULTS (_id INTEGER PRIMARY KEY AUTOINCREMENT, QN TEXT, OP_CORRECT TEXT, OP_SELECTED TEXT,DATED TEXT)");
 
         }
         }
@@ -43,6 +43,7 @@ public class PmpDatabaseHelper extends SQLiteOpenHelper {
             qbankValues.put("OPTIONB", optionB);
             qbankValues.put("OPTIONC", optionC);
             qbankValues.put("OPTIOND", optionD);
+            qbankValues.put("ANSWER",answer);
             long b = db.insert("QBANK",null,qbankValues);
 
         }

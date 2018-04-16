@@ -35,6 +35,8 @@ public class ExamDetailFragment extends Fragment implements View.OnClickListener
     int n = 0;
 
 
+
+
     @Override
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 //                             Bundle savedInstanceState) {
@@ -70,8 +72,10 @@ public class ExamDetailFragment extends Fragment implements View.OnClickListener
 
 
         try {
+
             SQLiteOpenHelper pmpDatabaseHelper = new PmpDatabaseHelper(getContext());
             SQLiteDatabase db = pmpDatabaseHelper.getReadableDatabase();
+
             Random rand = new Random();
             n = rand.nextInt(3)+1;
 
@@ -130,6 +134,10 @@ public class ExamDetailFragment extends Fragment implements View.OnClickListener
         }
     }
 
+    public void onBackPressed(){
+
+    }
+
     public void onSubmitClicked(){
         if (selected == null){
             Toast toast = Toast.makeText(getContext(), "Please select an option", Toast.LENGTH_SHORT);
@@ -138,23 +146,46 @@ public class ExamDetailFragment extends Fragment implements View.OnClickListener
         else {
             Toast toast = Toast.makeText(getContext(), "selected option is " + selected, Toast.LENGTH_SHORT);
             toast.show();
-            Fragment frag = new ExamDetailFragment();
-            FragmentTransaction trans = getFragmentManager().beginTransaction();
-            trans.replace(R.id.detail_frag,frag);
-            trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            trans.commit();
-//            insertAnswers(question, exam_ans,selected);
+            insertAnswers(question, exam_ans,selected);
+
+            if (ExamActivity.loop < 4) {
+                Fragment frag = new ExamDetailFragment();
+                FragmentTransaction trans = getFragmentManager().beginTransaction();
+                trans.replace(R.id.detail_frag, frag);
+                trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                trans.commit();
+                Log.d("tag12","loop value is " + ExamActivity.loop);
+                ExamActivity.loop++;
+            }
+            else {
+                Fragment frag1 = new ResultSummaryFragment();
+                FragmentTransaction trans = getFragmentManager().beginTransaction();
+                trans.replace(R.id.detail_frag, frag1);
+                trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                trans.commit();
+
+            }
+
+//
         }
     }
 
-//    public void insertAnswers(String parm1, String parm2, String parm3){
-//        ContentValues resValues = new ContentValues();
-//
-//        resValues.put("QN",parm1);
-//        resValues.put("OP_CORRECT",parm2);
-//        resValues.put("OP_SELECTED",parm3);
-//        db.insert("RESULTS",null,resValues);
-//    }
+    public void insertAnswers(String parm1, String parm2, String parm3){
+        ContentValues resValues = new ContentValues();
+
+        resValues.put("QN",parm1);
+        resValues.put("OP_CORRECT",parm2);
+        resValues.put("OP_SELECTED",parm3);
+        if (parm2.equals(parm3)) {
+            ExamActivity.ctr++;
+        }
+        Log.d("tag15","ctr value is " + ExamActivity.ctr);
+        resValues.put("DATED",ExamActivity.date_value);
+        SQLiteOpenHelper pmpDatabaseHelper = new PmpDatabaseHelper(getContext());
+        SQLiteDatabase db = pmpDatabaseHelper.getReadableDatabase();
+        db.insert("RESULTS",null,resValues);
+        Log.d("tag11",ExamActivity.date_value);
+    }
     }
 
 
